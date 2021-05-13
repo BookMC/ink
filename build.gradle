@@ -1,0 +1,70 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id "maven-publish"
+    id "java-gradle-plugin"
+    id "java"
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://jitpack.io"
+    }
+    maven {
+        url "https://maven.minecraftforge.net"
+    }
+}
+
+group = "org.bookmc"
+archivesBaseName = "ink"
+version = "1.0.0"
+
+configurations {
+    include
+    implementation.extendsFrom(include)
+}
+
+dependencies {
+    include "com.github.asbyth:ForgeGradle:86b2392"
+    implementation gradleApi()
+}
+
+gradlePlugin {
+    plugins {
+        ink {
+            id = "org.bookmc.ink"
+            implementationClass = "org.bookmc.ink.InkPlugin"
+        }
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.include]
+    archiveClassifier.set("")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+publishing {
+    repositories {
+        maven {
+            url = "$buildDir/repository"
+        }
+    }
+
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            pom {
+                name = "ink"
+                url = "https://github.com/BookMC/ink"
+
+                developers {
+                    developer {
+                        id = "ink"
+                        name = "BookMC"
+                    }
+                }
+            }
+        }
+    }
+}
