@@ -25,7 +25,7 @@ configurations {
 }
 
 dependencies {
-    include "com.github.asbyth:ForgeGradle:86b2392"
+    include "com.github.asbyth:ForgeGradle:8708bf3e01"
     implementation gradleApi()
 }
 
