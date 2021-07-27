@@ -44,7 +44,6 @@ public class InkPlugin implements Plugin<Project> {
         Configuration modDependency = project.getConfigurations().create(Constants.MOD_DEPENDENCY);
         project.getConfigurations().getByName(Constants.IMPLEMENTATION).extendsFrom(modDependency);
 
-        project.getDependencies().add(Constants.MOD_DEPENDENCY, Constants.GROUP_ID + ":tweaker:" + GithubUtils.getLatestCommit("BookMC/tweaker"));
         project.getDependencies().add(Constants.MOD_DEPENDENCY, Constants.GROUP_ID + ":loader:" + GithubUtils.getLatestCommit("BookMC/loader"));
         project.getDependencies().add(Constants.MOD_DEPENDENCY, Constants.GROUP_ID + ".minecraft:" + (isClient ? "client" : "server") + ":" + GithubUtils.getLatestCommit("BookMC/minecraft"));
         project.getDependencies().add(Constants.ANNOTATION_PROCESSOR, "org.spongepowered:mixin:0.7.11-SNAPSHOT");
