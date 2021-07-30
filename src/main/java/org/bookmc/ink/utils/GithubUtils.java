@@ -23,7 +23,7 @@ public class GithubUtils {
         } else {
             String json = get(String.format("https://api.github.com/repos/%s/releases", repo));
             JsonArray release = parser.parse(json).getAsJsonArray();
-            if (release.size() <= 0) {
+            if (release.size() > 0) {
                 return release.get(0).getAsJsonObject().get("tag_name").getAsString();
             } else {
                 String commitJson = get(String.format("https://api.github.com/repos/%s/commits", repo));
