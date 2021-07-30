@@ -1,5 +1,6 @@
 package org.bookmc.ink.utils;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -21,9 +22,15 @@ public class GithubUtils {
             return commit.get("sha").getAsString().substring(0, 10);
         } else {
             String json = get(String.format("https://api.github.com/repos/%s/releases", repo));
-            JsonObject release = parser.parse(json).getAsJsonArray().get(0).getAsJsonObject();
+            JsonArray release = parser.parse(json).getAsJsonArray();
+            if (release.size() <= 0) {
+                return release.get(0).getAsJsonObject().get("tag_name").getAsString();
+            } else {
+                String commitJson = get(String.format("https://api.github.com/repos/%s/commits", repo));
+                JsonObject commit = parser.parse(commitJson).getAsJsonArray().get(0).getAsJsonObject();
 
-            return release.get("tag_name").getAsString();
+                return commit.get("sha").getAsString().substring(0, 10);
+            }
         }
     }
 
