@@ -1,6 +1,6 @@
 package org.bookmc.ink.platform;
 
-public enum Platform {
+public enum Environment {
     CLIENT,
     SERVER
 }

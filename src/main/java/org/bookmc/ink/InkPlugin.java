@@ -5,7 +5,7 @@ import net.minecraftforge.gradle.user.tweakers.ServerTweaker;
 import net.minecraftforge.gradle.user.tweakers.TweakerExtension;
 import org.bookmc.ink.constants.Constants;
 import org.bookmc.ink.extension.InkExtension;
-import org.bookmc.ink.platform.Platform;
+import org.bookmc.ink.platform.Environment;
 import org.bookmc.ink.utils.GithubUtils;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -32,8 +32,8 @@ public class InkPlugin implements Plugin<Project> {
         InkExtension inkExtension = project.getExtensions().getByType(InkExtension.class);
 
         TweakerExtension extension = project.getExtensions().getByType(TweakerExtension.class);
-        Platform platform = project.getExtensions().getByType(InkExtension.class).platform.get();
-        boolean isClient = platform == Platform.CLIENT;
+        Environment environment = project.getExtensions().getByType(InkExtension.class).platform.get();
+        boolean isClient = environment == Environment.CLIENT;
 
         extension.setTweakClass(inkExtension.tweakClass.getOrElse(isClient ? Constants.CLIENT_LOADER : Constants.SERVER_LOADER));
         extension.setMappings(inkExtension.mappings.get());
@@ -44,10 +44,10 @@ public class InkPlugin implements Plugin<Project> {
         Configuration modDependency = project.getConfigurations().create(Constants.MOD_DEPENDENCY);
         project.getConfigurations().getByName(Constants.IMPLEMENTATION).extendsFrom(modDependency);
 
-        project.getDependencies().add(Constants.MOD_DEPENDENCY, Constants.GROUP_ID + ":loader:" + GithubUtils.getLatestCommit("BookMC/loader"));
-        project.getDependencies().add(Constants.MOD_DEPENDENCY, Constants.GROUP_ID + ".minecraft:" + (isClient ? "client" : "server") + ":" + GithubUtils.getLatestCommit("BookMC/minecraft"));
+        project.getDependencies().add(Constants.MOD_DEPENDENCY, Constants.GROUP_ID + ":book-loader:" + GithubUtils.getLatestRelease("BookMC/loader", inkExtension.bleedingEdge.get()));
+        project.getDependencies().add(Constants.MOD_DEPENDENCY, Constants.GROUP_ID + ".minecraft:" + (isClient ? "client" : "server") + ":" + GithubUtils.getLatestRelease("BookMC/minecraft", inkExtension.bleedingEdge.get()));
         project.getDependencies().add(Constants.ANNOTATION_PROCESSOR, "org.spongepowered:mixin:0.7.11-SNAPSHOT");
 
-        project.getPluginManager().apply(platform == Platform.CLIENT ? ClientTweaker.class : ServerTweaker.class);
+        project.getPluginManager().apply(environment == Environment.CLIENT ? ClientTweaker.class : ServerTweaker.class);
     }
 }

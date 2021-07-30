@@ -13,11 +13,18 @@ import java.nio.charset.StandardCharsets;
 public class GithubUtils {
     private static final JsonParser parser = new JsonParser();
 
-    public static String getLatestCommit(String repo) {
-        String json = get(String.format("https://api.github.com/repos/%s/commits", repo));
-        JsonObject commit = parser.parse(json).getAsJsonArray().get(0).getAsJsonObject();
+    public static String getLatestRelease(String repo, boolean bleedingEdge) {
+        if (bleedingEdge) {
+            String json = get(String.format("https://api.github.com/repos/%s/commits", repo));
+            JsonObject commit = parser.parse(json).getAsJsonArray().get(0).getAsJsonObject();
 
-        return commit.get("sha").getAsString().substring(0, 10);
+            return commit.get("sha").getAsString().substring(0, 10);
+        } else {
+            String json = get(String.format("https://api.github.com/repos/%s/releases", repo));
+            JsonObject release = parser.parse(json).getAsJsonArray().get(0).getAsJsonObject();
+
+            return release.get("tag_name").getAsString();
+        }
     }
 
     public static String get(String url) {
