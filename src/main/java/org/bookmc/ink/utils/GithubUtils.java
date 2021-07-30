@@ -1,6 +1,7 @@
 package org.bookmc.ink.utils;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -16,22 +17,23 @@ public class GithubUtils {
 
     public static String getLatestRelease(String repo, boolean bleedingEdge) {
         if (bleedingEdge) {
-            String json = get(String.format("https://api.github.com/repos/%s/commits", repo));
-            JsonObject commit = parser.parse(json).getAsJsonArray().get(0).getAsJsonObject();
-
-            return commit.get("sha").getAsString().substring(0, 10);
+            return getBleedingEdge(repo);
         } else {
-            String json = get(String.format("https://api.github.com/repos/%s/releases", repo));
-            JsonArray release = parser.parse(json).getAsJsonArray();
-            if (release.size() > 0) {
+            try {
+                String json = get(String.format("https://api.github.com/repos/%s/releases", repo));
+                JsonArray release = parser.parse(json).getAsJsonArray();
                 return release.get(0).getAsJsonObject().get("tag_name").getAsString();
-            } else {
-                String commitJson = get(String.format("https://api.github.com/repos/%s/commits", repo));
-                JsonObject commit = parser.parse(commitJson).getAsJsonArray().get(0).getAsJsonObject();
-
-                return commit.get("sha").getAsString().substring(0, 10);
+            } catch (Throwable t) {
+                return getBleedingEdge(repo);
             }
         }
+    }
+
+    private static String getBleedingEdge(String repo) {
+        String json = get(String.format("https://api.github.com/repos/%s/commits", repo));
+        JsonObject commit = parser.parse(json).getAsJsonArray().get(0).getAsJsonObject();
+
+        return commit.get("sha").getAsString().substring(0, 10);
     }
 
     public static String get(String url) {
