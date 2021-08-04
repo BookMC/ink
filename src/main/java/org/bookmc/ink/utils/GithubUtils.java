@@ -1,9 +1,6 @@
 package org.bookmc.ink.utils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,8 +28,9 @@ public class GithubUtils {
 
     private static String getBleedingEdge(String repo) {
         String json = get(String.format("https://api.github.com/repos/%s/commits", repo));
-        JsonObject commit = parser.parse(json).getAsJsonArray().get(0).getAsJsonObject();
-
+        JsonElement initial = parser.parse(json);
+        System.out.println(new Gson().toJson(initial));
+        JsonObject commit = initial.getAsJsonArray().get(0).getAsJsonObject();
         return commit.get("sha").getAsString().substring(0, 10);
     }
 

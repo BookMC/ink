@@ -35,11 +35,12 @@ public class InkPlugin implements Plugin<Project> {
         Environment environment = project.getExtensions().getByType(InkExtension.class).platform.get();
         boolean isClient = environment == Environment.CLIENT;
 
-        extension.setTweakClass(inkExtension.tweakClass.getOrElse(isClient ? Constants.CLIENT_LOADER : Constants.SERVER_LOADER));
         extension.setMappings(inkExtension.mappings.get());
         extension.setVersion(inkExtension.gameVersion.get());
         extension.setRunDir(inkExtension.runDirectory.get());
         extension.setMakeObfSourceJar(inkExtension.makeObfSourceJar.get());
+        extension.setLaunchwrapper(false);
+        extension.setMainClass(Constants.MAIN_CLASS);
 
         Configuration modDependency = project.getConfigurations().create(Constants.MOD_DEPENDENCY);
         project.getConfigurations().getByName(Constants.IMPLEMENTATION).extendsFrom(modDependency);

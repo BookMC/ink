@@ -16,8 +16,7 @@ repositories {
 }
 
 group = "org.bookmc"
-archivesBaseName = "ink"
-version = "1.1.0"
+version = "1.2"
 
 configurations {
     include
@@ -25,7 +24,10 @@ configurations {
 }
 
 dependencies {
-    include "com.github.asbyth:ForgeGradle:8708bf3e01"
+    include("com.github.BookMC:ForgeGradle:91a4d3e4f4") {
+        exclude module: "gson"
+    }
+    include "com.google.code.gson:gson:2.8.7"
     implementation gradleApi()
 }
 
@@ -44,6 +46,8 @@ shadowJar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+tasks.build.dependsOn(tasks.shadowJar)
+
 publishing {
     repositories {
         maven {
@@ -60,7 +64,6 @@ publishing {
 
                 developers {
                     developer {
-                        id = "ink"
                         name = "BookMC"
                     }
                 }
