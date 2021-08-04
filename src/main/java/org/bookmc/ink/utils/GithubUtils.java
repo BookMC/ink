@@ -29,7 +29,6 @@ public class GithubUtils {
     private static String getBleedingEdge(String repo) {
         String json = get(String.format("https://api.github.com/repos/%s/commits", repo));
         JsonElement initial = parser.parse(json);
-        System.out.println(new Gson().toJson(initial));
         JsonObject commit = initial.getAsJsonArray().get(0).getAsJsonObject();
         return commit.get("sha").getAsString().substring(0, 10);
     }
