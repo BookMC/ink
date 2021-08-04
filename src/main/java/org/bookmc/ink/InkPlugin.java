@@ -15,7 +15,7 @@ import org.gradle.api.artifacts.dsl.RepositoryHandler;
 import javax.annotation.Nonnull;
 
 public class InkPlugin implements Plugin<Project> {
-    private final String[] repositories = new String[]{"https://jitpack.io", "https://maven.minecraftforge.net/", "https://repo.spongepowered.org/maven"};
+    private final String[] repositories = new String[]{"https://jitpack.io", "https://maven.minecraftforge.net/", "https://repo.spongepowered.org/repository/maven-public/"};
 
     @Override
     public void apply(@Nonnull Project project) {
