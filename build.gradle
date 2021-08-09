@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
     id "maven-publish"
     id "java-gradle-plugin"
     id "java"
@@ -15,8 +15,16 @@ repositories {
     }
 }
 
+ext {
+    def env = System.getenv()
+    local = !env.GITHUB_ACTIONS
+    jdk = JavaVersion.current().getMajorVersion()
+}
+
 group = "org.bookmc"
-version = "1.2"
+// We add the suffix for (our) non-lts support.
+// Java 8 support will be removed in the future however.
+version "1.2.1${local ? ".local" : ""}${JavaVersion.current() != JavaVersion.VERSION_1_8 ? "+jdk.$jdk" : ""}"
 
 configurations {
     include
@@ -51,20 +59,32 @@ tasks.build.dependsOn(tasks.shadowJar)
 publishing {
     repositories {
         maven {
-            url = "$buildDir/repository"
+            def env = System.getenv()
+
+            boolean isEnvVarsAvailable = env.containsKey("MAVEN_USER") && env.containsKey("MAVEN_PASSWORD")
+
+            if (isEnvVarsAvailable) {
+                credentials {
+                    username env.get("MAVEN_USER")
+                    password env.get("MAVEN_PASSWORD")
+                }
+            }
+
+            url = !isEnvVarsAvailable ? "$buildDir/repository" : "https://maven.bookmc.org/releases/"
         }
     }
 
     publications {
+        //noinspection GroovyAssignabilityCheck
         mavenJava(MavenPublication) {
             from components.java
             pom {
-                name = "ink"
-                url = "https://github.com/BookMC/ink"
+                name = project.name
+                url = "https://github.com/BookMC/${project.name}"
 
                 developers {
                     developer {
-                        name = "BookMC"
+                        name = "ChachyDev"
                     }
                 }
             }
