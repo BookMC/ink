@@ -2,6 +2,8 @@ name: Build and test
 
 on:
   push:
+    branches:
+      - main
 jobs:
   build_test_and_publish_jdk8:
     runs-on: ubuntu-latest
